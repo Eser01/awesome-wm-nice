@@ -6,8 +6,9 @@
 ██║ ╚████║██║╚██████╗███████╗
 ╚═╝  ╚═══╝╚═╝ ╚═════╝╚══════╝
 Author: mu-tex
+Fork's Author: Eser01
 License: MIT
-Repository: https://github.com/mut-ex/awesome-wm-nice
+Repository: https://github.com/Eser01/awesome-wm-nice
 ]] -- ============================================================
 -- local ret, helpers = pcall(require, "helpers")
 -- local debug = ret and helpers.debug or function() end
@@ -202,9 +203,13 @@ table.load = t.load
 
 -- Load the color rules or create an empty table if there aren't any
 local gfilesys = require("gears.filesystem")
-local config_dir = gfilesys.get_configuration_dir()
-local color_rules_filename = "color_rules"
-local color_rules_filepath = config_dir .. "/nice/" .. color_rules_filename
+local color_rules_filepath = nil
+local cache_dir = gfilesys.get_xdg_cache_home()
+if cache_dir then
+    color_rules_filepath = cache_dir .. "awesome/nice_color_rules"
+else
+    color_rules_filepath = gfilesys.get_configuration_dir() .. "nice/color_rules"
+end
 _private.color_rules = table.load(color_rules_filepath) or {}
 
 -- Saves the contents of _private.color_rules table to file
