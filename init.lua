@@ -170,6 +170,27 @@ _private.sticky_color = "#f6a2ed"
 
 _private.icon_enabled = true
 _private.icon_size = 16
+
+_private.close_action = function(c)
+    c:kill()
+end
+_private.maximize_action = function(c)
+    c.maximized = not c.maximized
+end
+_private.minimize_action = function(c)
+    c.minimized = true
+end
+_private.floating_action = function(c)
+    c.floating = not c.floating
+    if c.floating then c.maximized = false end
+end
+_private.sticky_action = function(c)
+    c.sticky = not c.sticky
+    return c.sticky
+end
+_private.ontop_action = function(c)
+    c.ontop = not c.ontop
+end
 -- ------------------------------------------------------------
 
 -- => Saving and loading of color rules
@@ -365,7 +386,7 @@ local function create_titlebar_button(c, name, button_callback, property)
         end, function()
             if button_callback then
                 event = "normal"
-                button_callback()
+                button_callback(c)
             else
                 event = "hover"
             end
@@ -549,29 +570,17 @@ end
 -- Returns a titlebar item
 local function get_titlebar_item(c, name)
     if name == "close" then
-        return create_titlebar_button(c, name, function() c:kill() end)
+        return create_titlebar_button(c, name, _private.close_action)
     elseif name == "maximize" then
-        return create_titlebar_button(
-                   c, name, function() c.maximized = not c.maximized end,
-                   "maximized")
+        return create_titlebar_button(c, name, _private.maximize_action, "maximized")
     elseif name == "minimize" then
-        return create_titlebar_button(
-                   c, name, function() c.minimized = true end)
+        return create_titlebar_button(c, name, _private.minimize_action)
     elseif name == "ontop" then
-        return create_titlebar_button(
-                   c, name, function() c.ontop = not c.ontop end, "ontop")
+        return create_titlebar_button(c, name, _private.ontop_action, "ontop")
     elseif name == "floating" then
-        return create_titlebar_button(
-                   c, name, function()
-                c.floating = not c.floating
-                if c.floating then c.maximized = false end
-            end, "floating")
+        return create_titlebar_button(c, name, _private.floating_action, "floating")
     elseif name == "sticky" then
-        return create_titlebar_button(
-                   c, name, function()
-                c.sticky = not c.sticky
-                return c.sticky
-            end, "sticky")
+        return create_titlebar_button(c, name, _private.sticky_action, "sticky")
     elseif name == "title" then
         return create_titlebar_title(c)
     end

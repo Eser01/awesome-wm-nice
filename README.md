@@ -139,6 +139,12 @@ Below you will find further details explaining the configuration parameters for 
 | `sticky_color` | string | The base color for the sticky mode toggle  button | `#f6a2ed` |
 | `icon_enabled` | boolean | Whether the app icon should be displayed or not | `true` |
 | `icon_size` | integer | The size (square) of the icon displayed next to the title | `16` |
+| `close_action` | function | Callback action to fire when the *close* button is clicked | `callback:close_action` |
+| `maximize_action` | function | Callback action to fire when the *maximize* button is clicked | `callback:maximize_action` |
+| `minimize_action` | function | Callback action to fire when the *minimize* button is clicked | `callback:minimize_action` |
+| `floating_action` | function | Callback action to fire when the *floating* button is clicked | `callback:floating_action` |
+| `sticky_action` | function | Callback action to fire when the *sticky* button is clicked | `callback:sticky_action` |
+| `ontop_action` | function | Callback action to fire when the *ontop* button is clicked | `callback:ontop_action` |
 
 In addition to the above mentioned parameters, there some more parameters that require a little more explanation:
 
@@ -247,7 +253,34 @@ nice will automatically detect and change the window decoration color to match t
 
 ## Fork's Features
 
-The the paramateres `icon_enabled` and `icon_size` where added to enable app-icon to be display on the titlebar.
+### Icon
+
+The `icon_enabled` and `icon_size` parameters were added to allow the application icon to be displayed in the title bar.
+
+### Callback Replacement
+
+The `close_action`, `maximize_action`, `minimize_action`, `floating_action`, `sticky_action` and `ontop_action` parameters were added to override the default behavior of buttons when they are clicked.
+
+The callback function has a `c` argument which is the client on which the button was clicked.
+
+```lua
+local nice = require("nice")
+nice {
+    -- [...]
+
+    maximize_action = function(c)
+        if c.maximized then
+            c.maximized = false
+            resize(c)
+        else
+            c.maximized = true
+            c:raise()
+        end
+    end
+    
+    -- [...]
+}
+```
 
 
 
