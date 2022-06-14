@@ -112,7 +112,7 @@ Below you will find further details explaining the configuration parameters for 
 | --------------------- | :--: | ----------- | ------------------- |
 | `titlebar_height`       | integer | The height of the titlebar | `38`                  |
 | `titlebar_radius`       | integer | The radius of the top left and top right corners of the titlebar. Should be `>= 3` and `<= titlebar_height` | `9`                   |
-| `titlebar_color`        | string | The default color of the titlebar and window decorations. Should be a hex color string | `"#1e1e24"`         |
+| `titlebar_color`        | string | The default color of the titlebar and window decorations. Should be a hex color string | `#1e1e24`         |
 | `titlebar_padding_left` | integer | The padding on the left side of the titlebar | `0`                   |
 | `titlebar_padding_right` | integer | The padding on the right side of the titlebar | `0`                   |
 | `titlebar_font`         | string | The font and font size for text within the titlebar. See the default value for an example of the format | `"Sans 11"`           |
@@ -123,20 +123,22 @@ Below you will find further details explaining the configuration parameters for 
 | `mb_resize`             | integer or named constant | Mouse button to resize a window | `nice.MB_RIGHT`       |
 | `mb_win_shade_rollup`   | integer or named constant | Mouse button to roll up/hide window contents | `nice.MB_SCROLL_UP`   |
 | `mb_win_shade_rolldown` | integer or named constant | Mouse button to roll down/show window contents | `nice.MB_SCROLL_DOWN` |
-| `button_size` | integer | The size (diameter) of the titlebar buttons | 16 |
-| `button_margin_horizontal` | integer | The horizontal margin around each titlebar button. `button_margin_left` and `button_margin_right`can override this parameter. | 5 |
-| `button_margin_vertical` | integer | The vertical margin above and below each titlebar button. `button_margin_top` and `button_margin_bottom` can override this parameter. | nil |
-| `button_margin_top` | integer | The margin above each titlebar button | 2 |
-| `button_margin_bottom` | integer | The margin below each titlebar button | nil |
-| `button_margin_left` | integer | The margin to the left of each titlebar button | 0 |
-| `button_margin_right` | integer | The margin to the right of each titlebar button | 0 |
-| `tooltips_enabled` | boolean | If tooltip hints should be shown when the mouse cursor is hovered over a titlebar button | nil |
-| `close_color` | string | The base color for the close button | "#ee4266" |
-| `minimize_color` | string | The base color for the minimize button | "#ffb400" |
-| `maximize_color` | string | The base color for the maximize button | "#4cbb17" |
-| `floating_color` | string | The base color for the floating mode toggle button | "#f6a2ed" |
-| `ontop_color` | string | The base color for the on top mode toggle button | "#f6a2ed" |
-| `sticky_color` | string | The base color for the sticky mode toggle  button | "#f6a2ed" |
+| `button_size` | integer | The size (diameter) of the titlebar buttons | `16` |
+| `button_margin_horizontal` | integer | The horizontal margin around each titlebar button. `button_margin_left` and `button_margin_right`can override this parameter. | `5` |
+| `button_margin_vertical` | integer | The vertical margin above and below each titlebar button. `button_margin_top` and `button_margin_bottom` can override this parameter. | `nil` |
+| `button_margin_top` | integer | The margin above each titlebar button | `2` |
+| `button_margin_bottom` | integer | The margin below each titlebar button | `nil` |
+| `button_margin_left` | integer | The margin to the left of each titlebar button | `0` |
+| `button_margin_right` | integer | The margin to the right of each titlebar button | `0` |
+| `tooltips_enabled` | boolean | If tooltip hints should be shown when the mouse cursor is hovered over a titlebar button | `nil` |
+| `close_color` | string | The base color for the close button | `#ee4266` |
+| `minimize_color` | string | The base color for the minimize button | `#ffb400` |
+| `maximize_color` | string | The base color for the maximize button | `#4cbb17` |
+| `floating_color` | string | The base color for the floating mode toggle button | `#f6a2ed` |
+| `ontop_color` | string | The base color for the on top mode toggle button | `#f6a2ed` |
+| `sticky_color` | string | The base color for the sticky mode toggle  button | `#f6a2ed` |
+| `icon_enabled` | boolean | Whether the app icon should be displayed or not | `true` |
+| `icon_size` | integer | The size (square) of the icon displayed next to the title | `16` |
 
 In addition to the above mentioned parameters, there some more parameters that require a little more explanation:
 
@@ -240,6 +242,12 @@ nice will automatically detect and change the window decoration color to match t
 * If the client theme changes (for example if you change your terminal emulator colors), to update the window decoration colors, right-click on the titlebar and select 'Redo Window Decorations'
 * Scroll-up with your mouse over the titlebar to "roll-up" the window shade. Scroll-down over the titlebar, or left-click to "roll-down" the window shade
 * nice saves its color rules in the color_rules file within the module directory. If you wish you can manually edit it, or delete the file if you want to start again.
+
+
+
+## Fork's Features
+
+The the paramateres `icon_enabled` and `icon_size` where added to enable app-icon to be display on the titlebar.
 
 
 

@@ -17,7 +17,6 @@ local awful = require("awful")
 local atooltip = awful.tooltip
 local abutton = awful.button
 local wibox = require("wibox")
-local get_font_height = require("beautiful").get_font_height
 -- Widgets
 local imagebox = wibox.widget.imagebox
 local textbox = wibox.widget.textbox
@@ -168,6 +167,9 @@ _private.maximize_color = "#4CBB17"
 _private.floating_color = "#f6a2ed"
 _private.ontop_color = "#f6a2ed"
 _private.sticky_color = "#f6a2ed"
+
+_private.icon_enabled = true
+_private.icon_size = 16
 -- ------------------------------------------------------------
 
 -- => Saving and loading of color rules
@@ -488,40 +490,59 @@ local function get_titlebar_mouse_bindings(c)
 end
 
 -- Returns a titlebar widget for the given client
-local function create_titlebar_title(c)
+local function create_titlebar_title_textwidget(c)
     local client_color = c._nice_base_color
 
     local title_widget = wibox.widget {
-        align = "center",
-        ellipsize = "middle",
         opacity = c.active and 1 or title_unfocused_opacity,
-        valign = "center",
-        widget = textbox,
+        widget = textbox
     }
 
     local function update()
         local text_color = is_contrast_acceptable(
-                               title_color_light, client_color) and
-                               title_color_light or title_color_dark
+            title_color_light, client_color) and
+            title_color_light or title_color_dark
         title_widget.markup =
             ("<span foreground='%s' font='%s'>%s</span>"):format(
                 text_color, _private.titlebar_font, c.name)
     end
     c:connect_signal("property::name", update)
-    c:connect_signal(
-        "unfocus", function()
-            title_widget.opacity = title_unfocused_opacity
-        end)
+    c:connect_signal("unfocus", function()
+        title_widget.opacity = title_unfocused_opacity
+    end)
     c:connect_signal("focus", function() title_widget.opacity = 1 end)
     update()
-    local titlebar_font_height = get_font_height(_private.titlebar_font)
-    local leftover_space = _private.titlebar_height - titlebar_font_height
-    local margin_vertical = leftover_space > 1 and leftover_space / 2 or 0
-    return {
-        title_widget,
-        widget = wcontainer_margin,
-        top = margin_vertical,
-        bottom = margin_vertical,
+
+    return title_widget
+end
+
+local function create_titlebar_title(c)
+    local titlebar_title_widgets
+    if _private.icon_enabled then
+        titlebar_title_widgets = {
+            {
+                {
+                    awful.titlebar.widget.iconwidget(c),
+                    forced_width = _private.icon_size,
+                    forced_height = _private.icon_size,
+                    widget = wcontainer_margin
+                },
+                valign = "center",
+                widget = wcontainer_place
+            },
+            create_titlebar_title_textwidget(c),
+            spacing = dpi(6),
+            layout = wlayout_fixed_horizontal
+        }
+    else
+        titlebar_title_widgets = create_titlebar_title_textwidget(c)
+    end
+    return wibox.widget {
+        titlebar_title_widgets,
+        top = dpi(2),
+        left = dpi(6),
+        right = dpi(6),
+        widget = wcontainer_margin
     }
 end
 
@@ -559,16 +580,25 @@ end
 -- Creates titlebar items for a given group of item names
 local function create_titlebar_items(c, group)
     if not group then return nil end
-    if type(group) == "string" then return get_titlebar_item(c, group) end
-    local titlebar_group_items = wibox.widget {
-        layout = wlayout_fixed_horizontal,
-    }
+    local titlebar_group_items
     local item
-    for _, name in ipairs(group) do
-        item = get_titlebar_item(c, name)
-        if item then titlebar_group_items:add(item) end
+    if type(group) == "string" then
+        titlebar_group_items = get_titlebar_item(c, group)
+    else
+        titlebar_group_items = wibox.widget {
+            widget = wlayout_flex_horizontal,
+        }
+        for _, name in ipairs(group) do
+            item = get_titlebar_item(c, name)
+            if item then titlebar_group_items:add(item) end
+        end
     end
-    return titlebar_group_items
+    return wibox.widget {
+        titlebar_group_items,
+        valign = "center",
+        halign = "center",
+        widget = wcontainer_place,
+    }
 end
 -- ------------------------------------------------------------
 
@@ -721,7 +751,7 @@ function _private.add_window_decorations(c)
                 {
                     create_titlebar_items(c, _private.titlebar_items.middle),
                     buttons = get_titlebar_mouse_bindings(c),
-                    layout = wlayout_flex_horizontal,
+                    widget = wcontainer_margin,
                 },
                 {
                     create_titlebar_items(c, _private.titlebar_items.right),
@@ -730,8 +760,8 @@ function _private.add_window_decorations(c)
                 },
                 layout = wlayout_align_horizontal,
             },
-            widget = wcontainer_background,
             bgimage = top_edge,
+            widget = wcontainer_background,
         },
         imagebox(corner_top_right_img, false),
         layout = wlayout_align_horizontal,
