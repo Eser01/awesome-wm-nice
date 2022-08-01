@@ -1008,6 +1008,7 @@ function nice.initialize(args)
                 bl = 4,
                 br = 4,
             }
+            c:emit_signal("render::titlebars", c, _private.titlebar_height)
         end)
 end
 
